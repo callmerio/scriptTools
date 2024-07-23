@@ -1,10 +1,13 @@
 import os
 import sys
 
-def output_project(project_path, output_file):
-    # 如果output_file不包含路径，则在当前目录创建文件
-    if not os.path.dirname(output_file):
-        output_file = os.path.join(os.getcwd(), output_file)
+def output_project(project_path, output_file=None):
+    # 如果没有提供输出文件名，则使用项目路径的最后一个文件名
+    if output_file is None:
+        output_file = os.path.basename(os.path.normpath(project_path))
+    
+    # 确保输出文件在 output 文件夹中
+    output_file = os.path.join("output", output_file)
     
     # 确保输出文件的目录存在
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -21,13 +24,13 @@ def output_project(project_path, output_file):
                     out.write(f"Error reading file: {str(e)}")
 
 def main():
-    if len(sys.argv) != 3:
-        print("用法: python outputProgramInText.py <项目路径> <输出文件路径>")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("用法: python outputProgramInText.py <项目路径> [输出文件名]")
         sys.exit(1)
-    
+
     project_path = sys.argv[1]
-    output_file = "output/" + sys.argv[2]
-    
+    output_file = sys.argv[2] if len(sys.argv) == 3 else None
+
     if not os.path.exists(project_path):
         print(f"错误: 项目路径 '{project_path}' 不存在。")
         sys.exit(1)
@@ -37,3 +40,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
